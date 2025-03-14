@@ -17,7 +17,6 @@ services:
   fit-controller:
     image: ${FIT_CONTROLLER_IMAGE}
     container_name: fit-controller
-    command: flask --app orchestrator.py run --host=0.0.0.0
     environment:
       - PROXY_LIST=ad-proxy:${FIT_CONTROLLER_PORT},cart-proxy:${FIT_CONTROLLER_PORT},checkout-proxy:${FIT_CONTROLLER_PORT},currency-proxy:${FIT_CONTROLLER_PORT},email-proxy:${FIT_CONTROLLER_PORT},payment-proxy:${FIT_CONTROLLER_PORT},product-catalog-proxy:${FIT_CONTROLLER_PORT},quote-proxy:${FIT_CONTROLLER_PORT},recommendation-proxy:${FIT_CONTROLLER_PORT},shipping-proxy:${FIT_CONTROLLER_PORT}
     ports:
