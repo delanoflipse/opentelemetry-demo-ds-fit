@@ -18,7 +18,7 @@ services:
     image: ${FIT_CONTROLLER_IMAGE}
     container_name: fit-controller
     environment:
-      - PROXY_LIST=ad-proxy:${FIT_CONTROLLER_PORT},cart-proxy:${FIT_CONTROLLER_PORT},checkout-proxy:${FIT_CONTROLLER_PORT},currency-proxy:${FIT_CONTROLLER_PORT},email-proxy:${FIT_CONTROLLER_PORT},payment-proxy:${FIT_CONTROLLER_PORT},product-catalog-proxy:${FIT_CONTROLLER_PORT},quote-proxy:${FIT_CONTROLLER_PORT},recommendation-proxy:${FIT_CONTROLLER_PORT},shipping-proxy:${FIT_CONTROLLER_PORT}
+      - PROXY_LIST=ad-proxy:${FIT_CONTROLLER_PORT},cart-proxy:${FIT_CONTROLLER_PORT},checkout-proxy:${FIT_CONTROLLER_PORT},currency-proxy:${FIT_CONTROLLER_PORT},email-proxy:${FIT_CONTROLLER_PORT},payment-proxy:${FIT_CONTROLLER_PORT},product-catalog-proxy:${FIT_CONTROLLER_PORT},quote-proxy:${FIT_CONTROLLER_PORT},recommendation-proxy:${FIT_CONTROLLER_PORT},shipping-proxy:${FIT_CONTROLLER_PORT},frontend-fit-proxy:${FIT_CONTROLLER_PORT}
     ports:
       - ${ORCHESTRATOR_PORT}:${ORCHESTRATOR_PORT}
 
@@ -30,7 +30,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: ad-proxy
     environment:
-      - SERVICE_NAME=ad
       - PROXY_HOST=0.0.0.0:${AD_PORT}
       - PROXY_TARGET=http://ad:${AD_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -78,7 +77,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: cart-proxy
     environment:
-      - SERVICE_NAME=cart
       - PROXY_HOST=0.0.0.0:${CART_PORT}
       - PROXY_TARGET=http://cart:${CART_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -122,7 +120,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: checkout-proxy
     environment:
-      - SERVICE_NAME=checkout
       - PROXY_HOST=0.0.0.0:${CHECKOUT_PORT}
       - PROXY_TARGET=http://checkout:${CHECKOUT_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -181,7 +178,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: currency-proxy
     environment:
-      - SERVICE_NAME=currency
       - PROXY_HOST=0.0.0.0:${CURRENCY_PORT}
       - PROXY_TARGET=http://currency:${CURRENCY_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -221,7 +217,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: email-proxy
     environment:
-      - SERVICE_NAME=email
       - PROXY_HOST=0.0.0.0:${EMAIL_PORT}
       - PROXY_TARGET=http://email:${EMAIL_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -317,6 +312,17 @@ services:
         condition: service_started
     logging: *logging
 
+  frontend-fit-proxy:
+    image: ${FIT_PROXY_IMAGE}
+    environment:
+      - PROXY_HOST=0.0.0.0:${ENVOY_PORT}
+      - PROXY_TARGET=http://frontend-proxy:${ENVOY_PORT}
+      - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
+      - ORCHESTRATOR_HOST
+      # - USE_HTTP2=true
+    ports:
+      - "${ENVOY_PORT}:${ENVOY_PORT}"
+
   # Frontend Proxy (Envoy)
   frontend-proxy:
     image: ${IMAGE_NAME}:${DEMO_VERSION}-frontend-proxy
@@ -330,7 +336,6 @@ services:
           memory: 65M
     restart: unless-stopped
     ports:
-      - "${ENVOY_PORT}:${ENVOY_PORT}"
       - 10000:10000
     environment:
       - FRONTEND_PORT
@@ -392,7 +397,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: payment-proxy
     environment:
-      - SERVICE_NAME=payment
       - PROXY_HOST=0.0.0.0:${PAYMENT_PORT}
       - PROXY_TARGET=http://payment:${PAYMENT_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -432,7 +436,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: product-catalog-proxy
     environment:
-      - SERVICE_NAME=product-catalog
       - PROXY_HOST=0.0.0.0:${PRODUCT_CATALOG_PORT}
       - PROXY_TARGET=http://product-catalog:${PRODUCT_CATALOG_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -475,7 +478,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: quote-proxy
     environment:
-      - SERVICE_NAME=quote
       - PROXY_HOST=0.0.0.0:${QUOTE_PORT}
       - PROXY_TARGET=http://quote:${QUOTE_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -515,7 +517,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: recommendation-proxy
     environment:
-      - SERVICE_NAME=recommendation
       - PROXY_HOST=0.0.0.0:${RECOMMENDATION_PORT}
       - PROXY_TARGET=http://recommendation:${RECOMMENDATION_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
@@ -560,7 +561,6 @@ services:
     image: ${FIT_PROXY_IMAGE}
     container_name: shipping-proxy
     environment:
-      - SERVICE_NAME=shipping
       - PROXY_HOST=0.0.0.0:${SHIPPING_PORT}
       - PROXY_TARGET=http://shipping:${SHIPPING_PORT}
       - CONTROLLER_PORT=${FIT_CONTROLLER_PORT}
