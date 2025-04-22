@@ -256,7 +256,3 @@ layered_runtime:
             listener:
               example_listener_name:
                 connection_limit: 10000
-        tracing:
-          opentelemetry:
-            flush_interval_ms: 50
-            # min_flush_spans: 1
