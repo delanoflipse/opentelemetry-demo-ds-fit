@@ -19,6 +19,7 @@ services:
     container_name: fit-controller
     environment:
       - PROXY_LIST=ad-proxy:${FIT_CONTROLLER_PORT},cart-proxy:${FIT_CONTROLLER_PORT},checkout-proxy:${FIT_CONTROLLER_PORT},currency-proxy:${FIT_CONTROLLER_PORT},email-proxy:${FIT_CONTROLLER_PORT},payment-proxy:${FIT_CONTROLLER_PORT},product-catalog-proxy:${FIT_CONTROLLER_PORT},quote-proxy:${FIT_CONTROLLER_PORT},recommendation-proxy:${FIT_CONTROLLER_PORT},shipping-proxy:${FIT_CONTROLLER_PORT},frontend-fit-proxy:${FIT_CONTROLLER_PORT}
+      - FLASK_DEBUG=1
     ports:
       - ${ORCHESTRATOR_PORT}:${ORCHESTRATOR_PORT}
 
