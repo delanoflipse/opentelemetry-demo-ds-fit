@@ -62,16 +62,24 @@ yamllint: install-yamllint
 .PHONY: checklicense
 checklicense:
 	@echo "Checking license headers..."
+	@if ! npm ls @kt3k/license-checker; then npm install; fi
 	npx @kt3k/license-checker -q
 
 .PHONY: addlicense
 addlicense:
 	@echo "Adding license headers..."
+	@if ! npm ls @kt3k/license-checker; then npm install; fi
 	npx @kt3k/license-checker -q -i
+
+.PHONY: checklinks
+checklinks:
+	@echo "Checking links..."
+	@if ! npm ls @umbrelladocs/linkspector; then npm install; fi
+	linkspector check
 
 # Run all checks in order of speed / likely failure.
 .PHONY: check
-check: misspell markdownlint checklicense
+check: misspell markdownlint checklicense checklinks
 	@echo "All checks complete"
 
 # Attempt to fix issues / regenerate tables.
@@ -86,7 +94,7 @@ install-tools: $(MISSPELL)
 
 .PHONY: build
 build:
-	$(DOCKER_COMPOSE_CMD) build $(DOCKER_COMPOSE_BUILD_ARGS)
+	$(DOCKER_COMPOSE_CMD) $(DOCKER_COMPOSE_ENV) build $(DOCKER_COMPOSE_BUILD_ARGS)
 
 .PHONY: build-and-push
 build-and-push:
