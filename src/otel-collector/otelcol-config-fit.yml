@@ -89,10 +89,6 @@ exporters:
 
 processors:
   batch:
-  memory_limiter:
-    check_interval: 5s
-    limit_percentage: 80
-    spike_limit_percentage: 25
   transform:
     error_mode: ignore
     trace_statements:
@@ -102,15 +98,12 @@ processors:
           - replace_pattern(name, "\\?.*", "")
           - replace_match(name, "GET /api/products/*", "GET /api/products/{productId}")
 
-connectors:
-  spanmetrics:
-
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, transform, batch]
-      exporters: [otlp, debug, spanmetrics]
+      processors: [transform, batch]
+      exporters: [otlp, debug]
   telemetry:
     metrics:
       level: detailed
